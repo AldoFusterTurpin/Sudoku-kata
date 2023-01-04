@@ -1,19 +1,25 @@
 package sudoku
 
+import "math"
+
+// ValidateMatrix checks whether if the matrix of a sudoku solution is valid or not.
 func ValidateMatrix(matrix [][]int) bool {
-	for _, line := range matrix {
-		if !validateSlice(line) {
-			return false
-		}
-	}
-
-	// 1234
-	// 5678
-
 	nRows := len(matrix)
 	nCols := len(matrix[0])
 
-	for i := 0; i < nRows; i++ {
+	if nRows != nCols {
+		return false
+	}
+
+	return validateRowsAndCols(matrix, nCols) && validateBoxes(matrix, nRows)
+}
+
+func validateRowsAndCols(matrix [][]int, nCols int) bool {
+	for i, line := range matrix {
+		if !validateSlice(line) {
+			return false
+		}
+
 		var col []int
 
 		for j := 0; j < nCols; j++ {
@@ -25,7 +31,6 @@ func ValidateMatrix(matrix [][]int) bool {
 			return false
 		}
 	}
-
 	return true
 }
 
@@ -43,4 +48,40 @@ func validateSlice(slice []int) bool {
 	}
 
 	return true
+}
+
+func validateBoxes(matrix [][]int, nRows int) bool {
+	numberOfBoxes := int(math.Sqrt(float64(nRows)))
+
+	var startI, startJ int
+	endI := numberOfBoxes
+	endJ := numberOfBoxes
+
+	for endI <= nRows && endJ <= nRows {
+		box := sliceFromBox(matrix, startI, startJ, endI, endJ)
+
+		if !validateSlice(box) {
+			return false
+		}
+
+		startI += numberOfBoxes
+		startJ += numberOfBoxes
+		endI += numberOfBoxes
+		endJ += numberOfBoxes
+	}
+
+	return true
+}
+
+func sliceFromBox(matrix [][]int, startRowIndex, startColIndex, endRowIndex, endColIndex int) []int {
+	var box []int
+	for i := startRowIndex; i < endRowIndex; i++ {
+
+		for j := startColIndex; j < endColIndex; j++ {
+			element := matrix[i][j]
+			box = append(box, element)
+		}
+	}
+
+	return box
 }
