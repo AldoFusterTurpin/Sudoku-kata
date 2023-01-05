@@ -1,9 +1,11 @@
 package sudoku
 
-import "math"
+import (
+	"math"
+)
 
-// ValidateMatrix checks whether if the matrix of a sudoku solution is valid or not.
-func ValidateMatrix(matrix [][]int) bool {
+// IsMatrixValid checks whether the matrix of a sudoku solution is valid or not.
+func IsMatrixValid(matrix [][]int) bool {
 	nRows := len(matrix)
 	nCols := len(matrix[0])
 
