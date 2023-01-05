@@ -6,42 +6,38 @@ import (
 	"github.com/AldoFusterTurpin/Sudoku-kata/internal/sudoku"
 )
 
-func TestIsValidMatrixShouldReturnFalseForInvalidMatrix(t *testing.T) {
-	input := [][]int{{1, 2, 3, 4}, {2, 1, 4, 3}, {3, 4, 1, 2}, {4, 3, 2, 1}}
-	expected := false
-
-	got := sudoku.IsMatrixValid(input)
-	if got != expected {
-		t.Errorf("expected %v, but got %v", expected, got)
+func TestIsMatrixValid(t *testing.T) {
+	type testCase struct {
+		input    [][]int
+		expected bool
 	}
-}
 
-func TestIsValidMatrixShouldReturnFalseFoReallyWrongMatrix(t *testing.T) {
-	input := [][]int{{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}}
-	expected := false
-
-	got := sudoku.IsMatrixValid(input)
-	if got != expected {
-		t.Errorf("expected %v, but got %v", expected, got)
+	tests := map[string]testCase{
+		"ShouldReturnFalseForInvalidMatrix": {
+			input:    [][]int{{1, 2, 3, 4}, {2, 1, 4, 3}, {3, 4, 1, 2}, {4, 3, 2, 1}},
+			expected: false,
+		},
+		"ShouldReturnFalseFoReallyWrongMatrix": {
+			input:    [][]int{{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}},
+			expected: false,
+		},
+		"ShouldReturnTrueForValidMatrix": {
+			input:    [][]int{{1, 2, 3, 4}, {3, 4, 1, 2}, {2, 3, 4, 1}, {4, 1, 2, 3}},
+			expected: true,
+		},
+		"ShouldReturnFalseForNotValidRangeMatrix": {
+			input:    [][]int{{1}, {1, 2}, {3, 2, 1}, {4, 1, 2, 3}},
+			expected: false,
+		},
 	}
-}
 
-func TestIsValidMatrixShouldReturnTrueForValidMatrix(t *testing.T) {
-	input := [][]int{{1, 2, 3, 4}, {3, 4, 1, 2}, {2, 3, 4, 1}, {4, 1, 2, 3}}
-	expected := true
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			got := sudoku.IsMatrixValid(tc.input)
 
-	got := sudoku.IsMatrixValid(input)
-	if got != expected {
-		t.Errorf("expected %v, but got %v", expected, got)
-	}
-}
-
-func TestIsValidMatrixShouldReturnFalseForNotValidRangeMatrix(t *testing.T) {
-	input := [][]int{{1}, {1, 2}, {3, 2, 1}, {4, 1, 2, 3}}
-	expected := false
-
-	got := sudoku.IsMatrixValid(input)
-	if got != expected {
-		t.Errorf("expected %v, but got %v", expected, got)
+			if tc.expected != got {
+				t.Fatalf("expected %v, but got %v", tc.expected, got)
+			}
+		})
 	}
 }
