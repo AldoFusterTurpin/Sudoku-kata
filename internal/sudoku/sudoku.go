@@ -13,12 +13,12 @@ func IsMatrixValid(matrix [][]int) bool {
 		return false
 	}
 
-	return validateRowsAndCols(matrix, nCols) && validateBoxes(matrix, nRows)
+	return areRowsAndColsValid(matrix, nCols) && areBoxesValid(matrix, nRows)
 }
 
-func validateRowsAndCols(matrix [][]int, nCols int) bool {
+func areRowsAndColsValid(matrix [][]int, nCols int) bool {
 	for i, line := range matrix {
-		if !validateSlice(line) {
+		if !isSliceValid(line) {
 			return false
 		}
 
@@ -29,14 +29,14 @@ func validateRowsAndCols(matrix [][]int, nCols int) bool {
 			col = append(col, element)
 		}
 
-		if !validateSlice(col) {
+		if !isSliceValid(col) {
 			return false
 		}
 	}
 	return true
 }
 
-func validateSlice(slice []int) bool {
+func isSliceValid(slice []int) bool {
 	uniques := make(map[int]struct{})
 
 	for _, element := range slice {
@@ -52,7 +52,7 @@ func validateSlice(slice []int) bool {
 	return true
 }
 
-func validateBoxes(matrix [][]int, nRows int) bool {
+func areBoxesValid(matrix [][]int, nRows int) bool {
 	numberOfBoxes := int(math.Sqrt(float64(nRows)))
 
 	var startI, startJ int
@@ -60,9 +60,9 @@ func validateBoxes(matrix [][]int, nRows int) bool {
 	endJ := numberOfBoxes
 
 	for endI <= nRows && endJ <= nRows {
-		box := sliceFromBox(matrix, startI, startJ, endI, endJ)
+		box := createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)
 
-		if !validateSlice(box) {
+		if !isSliceValid(box) {
 			return false
 		}
 
@@ -75,7 +75,7 @@ func validateBoxes(matrix [][]int, nRows int) bool {
 	return true
 }
 
-func sliceFromBox(matrix [][]int, startRowIndex, startColIndex, endRowIndex, endColIndex int) []int {
+func createBoxSliceFromMatrix(matrix [][]int, startRowIndex, startColIndex, endRowIndex, endColIndex int) []int {
 	var box []int
 	for i := startRowIndex; i < endRowIndex; i++ {
 
