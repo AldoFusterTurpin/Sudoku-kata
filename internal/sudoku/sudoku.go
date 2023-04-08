@@ -87,3 +87,31 @@ func createBoxSliceFromMatrix(matrix [][]int, startRowIndex, startColIndex, endR
 
 	return box
 }
+
+func SolutionMatchesTheGrid(grid [][]int, proposedSolution [][]int) bool {
+	gridRows := len(grid)
+	proposedSolutionRows := len(proposedSolution)
+
+	if gridRows != proposedSolutionRows {
+		return false
+	}
+
+	// We trust there's at least 1 column
+	gridCols := len(grid[0])
+	proposedSolutionCols := len(proposedSolution[0])
+
+	if gridCols != proposedSolutionCols {
+		return false
+	}
+
+	for i := 0; i < gridRows; i++ {
+		for j := 0; j < gridCols; j++ {
+			// Grid empty, skip
+			if grid[i][j] != -1 && grid[i][j] != proposedSolution[i][j] {
+				return false
+			}
+		}
+	}
+
+	return true
+}
