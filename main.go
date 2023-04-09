@@ -61,7 +61,7 @@ func processFilePath(fullPath string) error {
 	fileName := filepath.Base(fullPath)
 	fmt.Printf("%v: ", fileName)
 
-	if sudoku.IsMatrixValid(matrix) {
+	if sudoku.MatrixIsValid(matrix) {
 		fmt.Println("The input comply with Sudoku's rules.")
 		return nil
 	}

@@ -4,8 +4,8 @@ import (
 	"math"
 )
 
-// IsMatrixValid checks whether the matrix of a sudoku solution is valid or not.
-func IsMatrixValid(matrix [][]int) bool {
+// MatrixIsValid checks whether the matrix of a sudoku solution is valid or not.
+func MatrixIsValid(matrix [][]int) bool {
 	nRows := len(matrix)
 	nCols := len(matrix[0])
 
@@ -88,7 +88,12 @@ func createBoxSliceFromMatrix(matrix [][]int, startRowIndex, startColIndex, endR
 	return box
 }
 
-func SolutionMatchesTheGrid(grid [][]int, proposedSolution [][]int) bool {
+// Precondition: grid and proposedSolution have a valid shape (n x n with n > 0)
+func ProposedSolutionIsValid(grid [][]int, proposedSolution [][]int) bool {
+	return gridCorrespondsToProposedSolution(grid, proposedSolution) && MatrixIsValid(proposedSolution)
+}
+
+func gridCorrespondsToProposedSolution(grid [][]int, proposedSolution [][]int) bool {
 	gridRows := len(grid)
 	proposedSolutionRows := len(proposedSolution)
 
@@ -96,7 +101,6 @@ func SolutionMatchesTheGrid(grid [][]int, proposedSolution [][]int) bool {
 		return false
 	}
 
-	// We trust there's at least 1 column
 	gridCols := len(grid[0])
 	proposedSolutionCols := len(proposedSolution[0])
 
@@ -106,12 +110,11 @@ func SolutionMatchesTheGrid(grid [][]int, proposedSolution [][]int) bool {
 
 	for i := 0; i < gridRows; i++ {
 		for j := 0; j < gridCols; j++ {
-			// Grid empty, skip
-			if grid[i][j] != -1 && grid[i][j] != proposedSolution[i][j] {
+			cellContainsNumber := grid[i][j] != -1
+			if cellContainsNumber && grid[i][j] != proposedSolution[i][j] {
 				return false
 			}
 		}
 	}
-
 	return true
 }

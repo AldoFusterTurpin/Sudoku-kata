@@ -6,7 +6,7 @@ import (
 	"github.com/AldoFusterTurpin/Sudoku-kata/internal/sudoku"
 )
 
-func TestIsMatrixValid(t *testing.T) {
+func TestMatrixIsValid(t *testing.T) {
 	type testCase struct {
 		input    [][]int
 		expected bool
@@ -33,7 +33,7 @@ func TestIsMatrixValid(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := sudoku.IsMatrixValid(tc.input)
+			got := sudoku.MatrixIsValid(tc.input)
 
 			if tc.expected != got {
 				t.Fatalf("expected %v, but got %v", tc.expected, got)
@@ -42,7 +42,7 @@ func TestIsMatrixValid(t *testing.T) {
 	}
 }
 
-func TestSolutionMatchesTheGrid(t *testing.T) {
+func TestProposedSolutionIsValid(t *testing.T) {
 	type testCase struct {
 		grid             [][]int
 		proposedSolution [][]int
@@ -91,7 +91,7 @@ func TestSolutionMatchesTheGrid(t *testing.T) {
 				{2, 8, 7, 4, 1, 9, 6, 3, 5}},
 			expected: false,
 		},
-		"ShouldReturnTrueIfGridIsContainedInSolution": {
+		"ShouldReturnFalseIfGridIsContainedInSolutionButProposedSolutionIsNotValid": {
 			grid: [][]int{{5, 3, -1, -1, 7, -1, -1, -1, -1},
 				{6, -1, -1, 1, 9, 5, -1, -1, -1},
 				{-1, 9, 8, -1, -1, -1, -1, 6, -1},
@@ -110,9 +110,9 @@ func TestSolutionMatchesTheGrid(t *testing.T) {
 				{9, 6, 1, 5, 3, 7, 2, 8, 4},
 				{2, 8, 7, 4, 1, 9, 6, 3, 5},
 				{3, 1, 5, 2, 8, 6, 1, 7, 9}},
-			expected: true,
+			expected: false,
 		},
-		"ShouldReturnFalseIfGridIsContainedInSolution": {
+		"ShouldReturnFalseIfGridIsContainedInSolutionButInvalidProposedSolution": {
 			grid: [][]int{{5, 3, -1, -1, 7, -1, -1, -1, -1},
 				{6, -1, -1, 1, 9, 5, -1, -1, -1},
 				{-1, 9, 8, -1, -1, -1, -1, 6, -1},
@@ -133,11 +133,53 @@ func TestSolutionMatchesTheGrid(t *testing.T) {
 				{2, 4, 8, 7, 6, 9, 3, 1, 5}},
 			expected: false,
 		},
+		"ShouldReturnFalseIfGridIsContainedInSolutionButSolutionIsNotValidDueToRepeated3InRow0": {
+			grid: [][]int{{5, 3, -1, -1, 7, -1, -1, -1, -1},
+				{6, -1, -1, 1, 9, 5, -1, -1, -1},
+				{-1, 9, 8, -1, -1, -1, -1, 6, -1},
+				{8, -1, -1, -1, 6, -1, -1, -1, 3},
+				{4, -1, -1, 8, 7, 3, -1, -1, 1},
+				{7, -1, -1, -1, 2, -1, -1, -1, 6},
+				{-1, 6, -1, -1, -1, -1, 2, 8, -1},
+				{-1, -1, -1, 4, 1, 9, -1, -1, 5},
+				{-1, 1, -1, -1, 8, -1, -1, 7, 9}},
+			proposedSolution: [][]int{{5, 3, 3, 6, 7, 8, 9, 1, 2},
+				{6, 7, 2, 1, 9, 5, 3, 4, 8},
+				{1, 9, 8, 3, 4, 2, 5, 6, 7},
+				{8, 5, 9, 7, 6, 1, 4, 2, 3},
+				{4, 2, 6, 8, 7, 3, 7, 9, 1},
+				{7, 1, 3, 9, 2, 4, 8, 5, 6},
+				{9, 6, 1, 5, 3, 7, 2, 8, 4},
+				{2, 8, 7, 4, 1, 9, 6, 3, 5},
+				{3, 1, 5, 2, 8, 6, 1, 7, 9}},
+			expected: false,
+		},
+		"ShouldReturnTrueIfGridIsContainedInSolutionAndProposedSolutionIsValid": {
+			grid: [][]int{{6, -1, -1, -1, 5, 8, -1, -1, -1},
+				{-1, -1, -1, -1, -1, -1, -1, -1, 5},
+				{4, 3, -1, -1, -1, -1, -1, 8, -1},
+				{5, -1, 6, -1, -1, -1, -1, -1, -1},
+				{-1, 7, -1, 1, 6, -1, -1, 4, -1},
+				{9, -1, 3, -1, 4, -1, -1, -1, -1},
+				{-1, -1, -1, -1, 7, -1, 5, -1, 8},
+				{-1, -1, -1, 9, -1, -1, -1, 1, 7},
+				{-1, 9, -1, -1, 3, -1, -1, 6, 4}},
+			proposedSolution: [][]int{{6, 2, 7, 4, 5, 8, 1, 3, 9},
+				{1, 8, 9, 6, 2, 3, 4, 7, 5},
+				{4, 3, 5, 7, 1, 9, 6, 8, 2},
+				{5, 4, 6, 3, 9, 7, 8, 2, 1},
+				{8, 7, 2, 1, 6, 5, 9, 4, 3},
+				{9, 1, 3, 8, 4, 2, 7, 5, 6},
+				{3, 6, 1, 2, 7, 4, 5, 9, 8},
+				{2, 5, 4, 9, 8, 6, 3, 1, 7},
+				{7, 9, 8, 5, 3, 1, 2, 6, 4}},
+			expected: true,
+		},
 	}
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := sudoku.SolutionMatchesTheGrid(tc.grid, tc.proposedSolution)
+			got := sudoku.ProposedSolutionIsValid(tc.grid, tc.proposedSolution)
 
 			if tc.expected != got {
 				t.Fatalf("expected %v, but got %v", tc.expected, got)
