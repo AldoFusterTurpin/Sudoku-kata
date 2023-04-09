@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -13,23 +14,53 @@ import (
 )
 
 func main() {
-	currentDirectory, err := os.Getwd()
+	var level = flag.Int("level", 0, "the Level of the Sudoku Kata you are solving")
+	flag.Parse()
+
+	cwd, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	iteratePath(currentDirectory + "/data")
+	switch *level {
+	case 0:
+		solveLevel_0(cwd + "/data/level0")
+	default:
+		if err := solveLevel1(cwd + "/data/level1"); err != nil {
+			fmt.Println(err)
+		}
+	}
 }
 
-func iteratePath(path string) {
-	processPathFn := processPathFn()
+func solveLevel1(path string) error {
+	grid, err := getMatrixFromPath(path + "/grid.csv")
+	if err != nil {
+		return err
+	}
+	fmt.Println(grid)
+
+	proposedSolution, err := getMatrixFromPath(path + "/solution.csv")
+	if err != nil {
+		return err
+	}
+
+	if sudoku.ProposedSolutionIsValid(grid, proposedSolution) {
+		fmt.Println("The proposed solution is correct")
+		return nil
+	}
+
+	fmt.Println("The proposed solution is incorrect")
+	return nil
+}
+
+func solveLevel_0(path string) {
+	processPathFn := WalkFn()
 	filepath.Walk(path, processPathFn)
 }
 
-// processPathFn() returns the function that will be called for each path.
-// It always returns nil as the error handling (printing)
-// is performed inside this function.
-func processPathFn() filepath.WalkFunc {
+// WalkFnLevel0() returns the function that will be called for each path.
+// It always returns nil as the error handling (printing) is performed inside this function.
+func WalkFn() filepath.WalkFunc {
 	return func(fullPath string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
@@ -39,7 +70,7 @@ func processPathFn() filepath.WalkFunc {
 			return nil
 		}
 
-		err = processFilePath(fullPath)
+		err = validateMatrixFromPath(fullPath)
 		if err != nil {
 			log.Print(err)
 		}
@@ -47,13 +78,8 @@ func processPathFn() filepath.WalkFunc {
 	}
 }
 
-func processFilePath(fullPath string) error {
-	input, err := getContentOfFile(fullPath)
-	if err != nil {
-		return err
-	}
-
-	matrix, err := convertInputToMatrix(input)
+func validateMatrixFromPath(fullPath string) error {
+	matrix, err := getMatrixFromPath(fullPath)
 	if err != nil {
 		return err
 	}
@@ -68,6 +94,19 @@ func processFilePath(fullPath string) error {
 
 	fmt.Println("The input doesn't comply with Sudoku's rules.")
 	return nil
+}
+
+func getMatrixFromPath(fullPath string) ([][]int, error) {
+	input, err := getContentOfFile(fullPath)
+	if err != nil {
+		return nil, err
+	}
+
+	matrix, err := convertInputToMatrix(input)
+	if err != nil {
+		return nil, err
+	}
+	return matrix, nil
 }
 
 func convertInputToMatrix(input string) ([][]int, error) {
