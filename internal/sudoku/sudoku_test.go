@@ -188,3 +188,46 @@ func TestProposedSolutionIsValid(t *testing.T) {
 	}
 
 }
+
+func TestProposedSolutionIsPartiallyValid(t *testing.T) {
+	type testCase struct {
+		grid             [][]int
+		proposedSolution [][]int
+		expected         bool
+	}
+
+	tests := map[string]testCase{
+		"ShouldReturnTrueIfGridIsContainedInSolutionAndProposedSolutionIsPartialComplete": {
+			grid: [][]int{{6, -1, -1, -1, 5, 8, -1, -1, -1},
+				{-1, -1, -1, -1, -1, -1, -1, -1, 5},
+				{4, 3, -1, -1, -1, -1, -1, 8, -1},
+				{5, -1, 6, -1, -1, -1, -1, -1, -1},
+				{-1, 7, -1, 1, 6, -1, -1, 4, -1},
+				{9, -1, 3, -1, 4, -1, -1, -1, -1},
+				{-1, -1, -1, -1, 7, -1, 5, -1, 8},
+				{-1, -1, -1, 9, -1, -1, -1, 1, 7},
+				{-1, 9, -1, -1, 3, -1, -1, 6, 4}},
+			proposedSolution: [][]int{{-1, 2, 7, 4, 5, 8, 1, 3, 9},
+				{1, 8, 9, 6, 2, 3, 4, 7, 5},
+				{4, 3, 5, 7, 1, 9, 6, 8, 2},
+				{5, 4, 6, 3, 9, 7, 8, 2, 1},
+				{8, 7, 2, 1, 6, 5, 9, 4, 3},
+				{9, 1, 3, 8, 4, 2, 7, 5, 6},
+				{3, 6, 1, 2, 7, 4, 5, 9, 8},
+				{2, 5, 4, 9, 8, 6, 3, 1, 7},
+				{7, 9, 8, 5, 3, 1, 2, 6, 4}},
+			expected: true,
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			got := sudoku.ProposedSolutionIsPartiallyValid(tc.grid, tc.proposedSolution)
+
+			if tc.expected != got {
+				t.Fatalf("expected %v, but got %v", tc.expected, got)
+			}
+		})
+	}
+
+}

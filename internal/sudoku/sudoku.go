@@ -25,7 +25,7 @@ func MatrixIsValid(matrix [][]int) bool {
 
 func areRowsAndColsValid(matrix [][]int, nCols int) bool {
 	for i, line := range matrix {
-		if !isSliceValid(line) {
+		if !isRowValidSkipsEmpty(line) {
 			return false
 		}
 
@@ -36,19 +36,22 @@ func areRowsAndColsValid(matrix [][]int, nCols int) bool {
 			col = append(col, element)
 		}
 
-		if !isSliceValid(col) {
+		if !isRowValidSkipsEmpty(col) {
 			return false
 		}
 	}
 	return true
 }
 
-func isSliceValid(slice []int) bool {
+func isRowValidSkipsEmpty(slice []int) bool {
 	uniques := make(map[int]struct{})
 
 	for _, element := range slice {
-		_, present := uniques[element]
+		if element == -1 {
+			continue
+		}
 
+		_, present := uniques[element]
 		if present {
 			return false
 		}
@@ -69,7 +72,7 @@ func areBoxesValid(matrix [][]int, nRows int) bool {
 	for endI <= nRows && endJ <= nRows {
 		box := createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)
 
-		if !isSliceValid(box) {
+		if !isRowValidSkipsEmpty(box) {
 			return false
 		}
 
@@ -98,6 +101,26 @@ func createBoxSliceFromMatrix(matrix [][]int, startRowIndex, startColIndex, endR
 // ProposedSolutionIsValid validates the proposed solution.
 // It assumes a precondition: grid and proposedSolution have a valid shape (n x n with n > 0)
 func ProposedSolutionIsValid(grid [][]int, proposedSolution [][]int) bool {
+	return gridCorrespondsToProposedSolution(grid, proposedSolution) &&
+		MatrixIsValid(proposedSolution) &&
+		noEmptyCells(proposedSolution)
+}
+
+// noEmptyCells verifies all rows in the matrix have a value (-1 means empty).
+func noEmptyCells(solution [][]int) bool {
+	for _, line := range solution {
+		for _, element := range line {
+			if element == -1 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+// ProposedSolutionIsPartiallyValid validates the proposed solution skipping empty values.
+// It assumes a precondition: grid and proposedSolution have a valid shape (n x n with n > 0)
+func ProposedSolutionIsPartiallyValid(grid [][]int, proposedSolution [][]int) bool {
 	return gridCorrespondsToProposedSolution(grid, proposedSolution) && MatrixIsValid(proposedSolution)
 }
 
@@ -118,8 +141,9 @@ func gridCorrespondsToProposedSolution(grid [][]int, proposedSolution [][]int) b
 
 	for i := 0; i < gridRows; i++ {
 		for j := 0; j < gridCols; j++ {
-			cellContainsNumber := grid[i][j] != -1
-			if cellContainsNumber && grid[i][j] != proposedSolution[i][j] {
+			gridContainsNumber := grid[i][j] != -1
+			proposedSolutionContainsNumber := proposedSolution[i][j] != -1
+			if gridContainsNumber && proposedSolutionContainsNumber && grid[i][j] != proposedSolution[i][j] {
 				return false
 			}
 		}
@@ -150,13 +174,13 @@ func SolveLevel_1(path string) error {
 
 // SolveLevel_0 solves the zero level of the kata.
 func SolveLevel_0(path string) {
-	processPathFn := WalkFn()
+	processPathFn := walkFn()
 	filepath.Walk(path, processPathFn)
 }
 
-// WalkFn returns the function that will be called for each path.
+// walkFn returns the function that will be called for each path.
 // It always returns nil as the error handling (printing) is performed inside this function.
-func WalkFn() filepath.WalkFunc {
+func walkFn() filepath.WalkFunc {
 	return func(fullPath string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
