@@ -50,6 +50,30 @@ func TestProposedSolutionIsValid(t *testing.T) {
 	}
 
 	tests := map[string]testCase{
+		"ShouldReturnTrueIfGridIsContainedInSolutionAndProposedSolutionIsValid_WrongStatement": {
+			grid: [][]int{
+				{5, 3, -1, -1, 7, -1, -1, -1, -1},
+				{6, -1, -1, 1, 9, 5, -1, -1, -1},
+				{-1, 9, 8, -1, -1, -1, -1, 6, -1},
+				{8, -1, -1, -1, 6, -1, -1, -1, 3},
+				{4, -1, -1, 8, -1, 3, -1, -1, 1},
+				{7, -1, -1, -1, 2, -1, -1, -1, 6},
+				{-1, 6, -1, -1, -1, -1, 2, 8, -1},
+				{-1, -1, -1, 4, 1, 9, -1, -1, 5},
+				{-1, -1, -1, -1, 8, -1, -1, 7, 9},
+			},
+			proposedSolution: [][]int{
+				{5, 3, 4, 6, 7, 8, 9, 1, 2},
+				{6, 7, 2, 1, 9, 5, 3, 4, 8},
+				{1, 9, 8, 3, 4, 2, 5, 6, 7},
+				{8, 5, 9, 7, 6, 1, 4, 2, 3},
+				{4, 2, 6, 8, 5, 3, 7, 9, 1},
+				{7, 1, 3, 9, 2, 4, 8, 5, 6},
+				{9, 6, 1, 5, 3, 7, 2, 8, 4},
+				{2, 8, 7, 4, 1, 9, 6, 3, 5},
+				{3, 4, 5, 2, 8, 6, 1, 7, 9}},
+			expected: true,
+		},
 		"ShouldReturnFalseIfNumberOfColumnsBetweenGridAndProposedSolutionIsDifferent": {
 			grid: [][]int{{5, 3, -1, -1, 7, -1, -1, -1},
 				{6, -1, -1, 1, 9, 5, -1, -1},
@@ -229,5 +253,47 @@ func TestProposedSolutionIsPartiallyValid(t *testing.T) {
 			}
 		})
 	}
+}
 
+func TestSolveSudoku(t *testing.T) {
+	type testCase struct {
+		grid     [][]int
+		solution [][]int
+		expected bool
+	}
+
+	tests := map[string]testCase{
+		"ShouldReturnTheSudokuSolved": {
+			grid: [][]int{{5, 3, -1, -1, 7, -1, -1, -1, -1},
+				{6, -1, -1, 1, 9, 5, -1, -1, -1},
+				{-1, 9, 8, -1, -1, -1, -1, 6, -1},
+				{8, -1, -1, -1, 6, -1, -1, -1, 3},
+				{4, -1, -1, 8, -1, 3, -1, -1, 1},
+				{7, -1, -1, -1, 2, -1, -1, -1, 6},
+				{-1, 6, -1, -1, -1, -1, 2, 8, -1},
+				{-1, -1, -1, 4, 1, 9, -1, -1, 5},
+				{-1, -1, -1, -1, 8, -1, -1, 7, 9}},
+			solution: [][]int{
+				{5, 3, 4, 6, 7, 8, 9, 1, 2},
+				{6, 7, 2, 1, 9, 5, 3, 4, 8},
+				{1, 9, 8, 3, 4, 2, 5, 6, 7},
+				{8, 5, 9, 7, 6, 1, 4, 2, 3},
+				{4, 2, 6, 8, 5, 3, 7, 9, 1},
+				{7, 1, 3, 9, 2, 4, 8, 5, 6},
+				{9, 6, 1, 5, 3, 7, 2, 8, 4},
+				{2, 8, 7, 4, 1, 9, 6, 3, 5},
+				{3, 4, 5, 2, 8, 6, 1, 7, 9}},
+			expected: true,
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			got := sudoku.ProposedSolutionIsValid(tc.grid, tc.solution)
+
+			if tc.expected != got {
+				t.Fatalf("expected %v, but got %v", tc.expected, got)
+			}
+		})
+	}
 }
