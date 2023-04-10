@@ -95,7 +95,8 @@ func createBoxSliceFromMatrix(matrix [][]int, startRowIndex, startColIndex, endR
 	return box
 }
 
-// Precondition: grid and proposedSolution have a valid shape (n x n with n > 0)
+// ProposedSolutionIsValid validates the proposed solution.
+// It assumes a precondition: grid and proposedSolution have a valid shape (n x n with n > 0)
 func ProposedSolutionIsValid(grid [][]int, proposedSolution [][]int) bool {
 	return gridCorrespondsToProposedSolution(grid, proposedSolution) && MatrixIsValid(proposedSolution)
 }
@@ -126,6 +127,7 @@ func gridCorrespondsToProposedSolution(grid [][]int, proposedSolution [][]int) b
 	return true
 }
 
+// SolveLevel_1 solves the first level of the kata.
 func SolveLevel_1(path string) error {
 	grid, err := getMatrixFromPath(path + "/grid.csv")
 	if err != nil {
@@ -146,12 +148,13 @@ func SolveLevel_1(path string) error {
 	return nil
 }
 
+// SolveLevel_0 solves the zero level of the kata.
 func SolveLevel_0(path string) {
 	processPathFn := WalkFn()
 	filepath.Walk(path, processPathFn)
 }
 
-// WalkFnLevel0() returns the function that will be called for each path.
+// WalkFn returns the function that will be called for each path.
 // It always returns nil as the error handling (printing) is performed inside this function.
 func WalkFn() filepath.WalkFunc {
 	return func(fullPath string, info os.FileInfo, err error) error {
