@@ -1,6 +1,7 @@
 package sudoku_test
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/AldoFusterTurpin/Sudoku-kata/internal/sudoku"
@@ -257,13 +258,12 @@ func TestProposedSolutionIsPartiallyValid(t *testing.T) {
 
 func TestSolveSudoku(t *testing.T) {
 	type testCase struct {
-		grid     [][]int
-		solution [][]int
-		expected bool
+		grid             [][]int
+		expectedSolution [][]int
 	}
 
 	tests := map[string]testCase{
-		"ShouldReturnTheSudokuSolved": {
+		"ShouldReturnTheSudokuSolved_IfItHasASolution": {
 			grid: [][]int{{5, 3, -1, -1, 7, -1, -1, -1, -1},
 				{6, -1, -1, 1, 9, 5, -1, -1, -1},
 				{-1, 9, 8, -1, -1, -1, -1, 6, -1},
@@ -273,7 +273,7 @@ func TestSolveSudoku(t *testing.T) {
 				{-1, 6, -1, -1, -1, -1, 2, 8, -1},
 				{-1, -1, -1, 4, 1, 9, -1, -1, 5},
 				{-1, -1, -1, -1, 8, -1, -1, 7, 9}},
-			solution: [][]int{
+			expectedSolution: [][]int{
 				{5, 3, 4, 6, 7, 8, 9, 1, 2},
 				{6, 7, 2, 1, 9, 5, 3, 4, 8},
 				{1, 9, 8, 3, 4, 2, 5, 6, 7},
@@ -283,16 +283,49 @@ func TestSolveSudoku(t *testing.T) {
 				{9, 6, 1, 5, 3, 7, 2, 8, 4},
 				{2, 8, 7, 4, 1, 9, 6, 3, 5},
 				{3, 4, 5, 2, 8, 6, 1, 7, 9}},
-			expected: true,
+		},
+		"ShouldReturnTheSudokuSolved_Lelele": {
+			grid: [][]int{{5, 3, 4, 4, 7, 4, 4, 4, 4},
+				{6, 4, 4, 1, 9, 5, 4, 4, 4},
+				{4, 9, 8, 4, 4, 4, 4, 6, 4},
+				{8, 4, 4, 4, 6, 4, 4, 4, 3},
+				{4, 4, 4, 8, 4, 3, 4, 4, 1},
+				{7, 4, 4, 4, 2, 4, 4, 4, 6},
+				{4, 6, 4, 4, 4, 4, 2, 8, 4},
+				{4, 4, 4, 4, 1, 9, 4, 4, 5},
+				{4, 4, 4, 4, 8, 4, -1, 7, 9}},
+			expectedSolution: [][]int{
+				{5, 3, 4, 6, 7, 8, 9, 1, 2},
+				{6, 7, 2, 1, 9, 5, 3, 4, 8},
+				{1, 9, 8, 3, 4, 2, 5, 6, 7},
+				{8, 5, 9, 7, 6, 1, 4, 2, 3},
+				{4, 2, 6, 8, 5, 3, 7, 9, 1},
+				{7, 1, 3, 9, 2, 4, 8, 5, 6},
+				{9, 6, 1, 5, 3, 7, 2, 8, 4},
+				{2, 8, 7, 4, 1, 9, 6, 3, 5},
+				{3, 4, 5, 2, 8, 6, 1, 7, 9}},
+		},
+		"ShouldReturnNil_IfCannotBeSolved": {
+			grid: [][]int{{5, 3, -1, -1, 7, -1, -1, -1, -1},
+				{6, -1, -1, 1, 9, 5, -1, -1, -1},
+				{-1, 9, 8, -1, -1, -1, -1, 6, -1},
+				{8, -1, -1, -1, 6, -1, -1, -1, 3},
+				{4, -1, -1, 8, -1, 3, -1, -1, 1},
+				{7, -1, -1, -1, 2, -1, -1, -1, 6},
+				{-1, 6, -1, -1, -1, -1, 2, 8, -1},
+				{-1, -1, -1, 3, 1, 9, -1, -1, -1},
+				{-1, -1, -1, -1, 8, -1, -1, 7, 9}},
+			expectedSolution: nil,
 		},
 	}
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := sudoku.ProposedSolutionIsValid(tc.grid, tc.solution)
+			got := sudoku.Solve(tc.grid)
 
-			if tc.expected != got {
-				t.Fatalf("expected %v, but got %v", tc.expected, got)
+			isEqual := reflect.DeepEqual(got, tc.expectedSolution)
+			if !isEqual {
+				t.Fatalf("expected %v, but got %v", tc.expectedSolution, got)
 			}
 		})
 	}

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// MatrixIsValid checks whether the matrix of a sudoku solution is valid or not.
+// MatrixIsValid checks whether the matrix of a sudoku expectedSolution is valid or not.
 func MatrixIsValid(matrix [][]int) bool {
 	nRows := len(matrix)
 	nCols := len(matrix[0])
@@ -98,7 +98,7 @@ func createBoxSliceFromMatrix(matrix [][]int, startRowIndex, startColIndex, endR
 	return box
 }
 
-// ProposedSolutionIsValid validates the proposed solution.
+// ProposedSolutionIsValid validates the proposed expectedSolution.
 // It assumes a precondition: grid and proposedSolution have a valid shape (n x n with n > 0)
 func ProposedSolutionIsValid(grid [][]int, proposedSolution [][]int) bool {
 	return gridCorrespondsToProposedSolution(grid, proposedSolution) &&
@@ -118,7 +118,7 @@ func noEmptyCells(solution [][]int) bool {
 	return true
 }
 
-// ProposedSolutionIsPartiallyValid validates the proposed solution skipping empty values.
+// ProposedSolutionIsPartiallyValid validates the proposed expectedSolution skipping empty values.
 // It assumes a precondition: grid and proposedSolution have a valid shape (n x n with n > 0)
 func ProposedSolutionIsPartiallyValid(grid [][]int, proposedSolution [][]int) bool {
 	return gridCorrespondsToProposedSolution(grid, proposedSolution) && MatrixIsValid(proposedSolution)
@@ -151,6 +151,43 @@ func gridCorrespondsToProposedSolution(grid [][]int, proposedSolution [][]int) b
 	return true
 }
 
+type Matrix [][]int
+
+type ValidSolutions []Matrix
+
+func copyMatrix(m [][]int) [][]int {
+	rows := len(m)
+	cp := make([][]int, rows)
+	for i := 0; i < rows; i++ {
+		cp[i] = make([]int, len(m[i]))
+		copy(cp[i], m[i])
+	}
+	return cp
+}
+
+func Solve(grid [][]int) [][]int {
+	out := copyMatrix(grid)
+
+	var validSolutions ValidSolutions
+
+	for i := 0; i < len(grid); i++ {
+		for j := 0; j < len(grid[i]); j++ {
+			if grid[i][j] == -1 {
+				for k := 1; k <= 9; k++ {
+					out[i][j] = k
+					validSolutions = append(validSolutions, copyMatrix(out))
+				}
+			}
+		}
+	}
+
+	return out
+}
+
+func nextValueToAdd(ints []int) int {
+	return -1
+}
+
 // SolveLevel_1 solves the first level of the kata.
 func SolveLevel_1(path string) error {
 	grid, err := getMatrixFromPath(path + "/grid.csv")
@@ -158,17 +195,17 @@ func SolveLevel_1(path string) error {
 		return err
 	}
 
-	proposedSolution, err := getMatrixFromPath(path + "/solution.csv")
+	proposedSolution, err := getMatrixFromPath(path + "/expectedSolution.csv")
 	if err != nil {
 		return err
 	}
 
 	if ProposedSolutionIsValid(grid, proposedSolution) {
-		fmt.Println("The proposed solution is correct")
+		fmt.Println("The proposed expectedSolution is correct")
 		return nil
 	}
 
-	fmt.Println("The proposed solution is incorrect")
+	fmt.Println("The proposed expectedSolution is incorrect")
 	return nil
 }
 
