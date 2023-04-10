@@ -173,15 +173,45 @@ func Solve(grid [][]int) [][]int {
 	for i := 0; i < len(grid); i++ {
 		for j := 0; j < len(grid[i]); j++ {
 			if grid[i][j] == -1 {
+				validSolutions = addNewNumberToAllSlots(validSolutions, out, i, j)
+			}
+		}
+	}
+
+	for _, solution := range validSolutions {
+		valid := MatrixIsValid(solution)
+		if valid {
+			return solution
+		}
+	}
+
+	return nil
+}
+
+func addNewNumberToAllSlots(inputSolutions ValidSolutions, matrix [][]int, i int, j int) ValidSolutions {
+	var outputSolutions ValidSolutions
+
+	if len(inputSolutions) == 0 {
+		if matrix[i][j] == -1 {
+			for k := 1; k <= 9; k++ {
+				tmp := copyMatrix(matrix)
+				tmp[i][j] = k
+				outputSolutions = append(outputSolutions, tmp)
+			}
+		}
+	} else {
+		for _, solution := range inputSolutions {
+			if solution[i][j] == -1 {
 				for k := 1; k <= 9; k++ {
-					out[i][j] = k
-					validSolutions = append(validSolutions, copyMatrix(out))
+					tmp := copyMatrix(solution)
+					tmp[i][j] = k
+					outputSolutions = append(outputSolutions, tmp)
 				}
 			}
 		}
 	}
 
-	return out
+	return outputSolutions
 }
 
 func nextValueToAdd(ints []int) int {
