@@ -21,7 +21,7 @@ This kind of problems are tipycal solved using a recursive function to easily ge
 
 type Matrix [][]int
 
-type ValidSolutions []Matrix
+type CandidatesSolutions []Matrix
 
 func copyMatrix(m [][]int) [][]int {
 	rows := len(m)
@@ -34,51 +34,55 @@ func copyMatrix(m [][]int) [][]int {
 }
 
 func Solve(grid [][]int) [][]int {
-	var validSolutions ValidSolutions
+	var candidatesSolutions CandidatesSolutions
 
 	for i := 0; i < len(grid); i++ {
 		for j := 0; j < len(grid[i]); j++ {
 			if grid[i][j] == -1 {
-				validSolutions = addNewNumberToAllSlots(validSolutions, grid, i, j)
+				candidatesSolutions = getMoreCandidatesSolutions(candidatesSolutions, grid, i, j)
 			}
 		}
 	}
 
-	for _, solution := range validSolutions {
-		if valid := ProposedSolutionIsValid(grid, solution); valid {
-			return solution
+	return getValidSolutionFromCandidateSolutionsIfAny(grid, candidatesSolutions)
+}
+
+func getValidSolutionFromCandidateSolutionsIfAny(grid Matrix, candidateSolutions CandidatesSolutions) Matrix {
+	for _, s := range candidateSolutions {
+		if ProposedSolutionIsValid(grid, s) {
+			return s
 		}
 	}
 
 	return nil
 }
 
-func addNewNumberToAllSlots(validSolutionsSoFar ValidSolutions, grid [][]int, i int, j int) ValidSolutions {
-	var outputSolutions ValidSolutions
+func getMoreCandidatesSolutions(candidateSolutionsIn CandidatesSolutions, grid [][]int, i int, j int) CandidatesSolutions {
+	var moreCandidateSolutions CandidatesSolutions
 
-	if len(validSolutionsSoFar) == 0 {
+	if len(candidateSolutionsIn) == 0 {
 		if grid[i][j] == -1 {
 			for k := 1; k <= 9; k++ {
 				tmp := copyMatrix(grid)
 				tmp[i][j] = k
 				if ProposedSolutionIsPartiallyValid(grid, tmp) {
-					outputSolutions = append(outputSolutions, tmp)
+					moreCandidateSolutions = append(moreCandidateSolutions, tmp)
 				}
 			}
 		}
 	} else {
-		for _, solution := range validSolutionsSoFar {
+		for _, solution := range candidateSolutionsIn {
 			if solution[i][j] == -1 {
 				for k := 1; k <= 9; k++ {
 					tmp := copyMatrix(solution)
 					tmp[i][j] = k
 					if ProposedSolutionIsPartiallyValid(grid, tmp) {
-						outputSolutions = append(outputSolutions, tmp)
+						moreCandidateSolutions = append(moreCandidateSolutions, tmp)
 					}
 				}
 			}
 		}
 	}
 
-	return outputSolutions
+	return moreCandidateSolutions
 }
