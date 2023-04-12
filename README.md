@@ -33,5 +33,5 @@ and in the step where the test are run you see something like
 
 it means that the image layer is cached and the tests are NOT executed because nothing has changed in your code. 
 
-If you still want to execute the tests even you code have not changed, modify with a simple random comment (or blank line) the test file.
+If you still want to execute the tests even your code have not changed, modify with a simple random comment (or blank line) the test file.
 (You probably don't need to do that, but just to inform you)
