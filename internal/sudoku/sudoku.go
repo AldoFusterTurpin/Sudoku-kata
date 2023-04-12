@@ -151,69 +151,6 @@ func gridCorrespondsToProposedSolution(grid [][]int, proposedSolution [][]int) b
 	return true
 }
 
-type Matrix [][]int
-
-type ValidSolutions []Matrix
-
-func copyMatrix(m [][]int) [][]int {
-	rows := len(m)
-	cp := make([][]int, rows)
-	for i := 0; i < rows; i++ {
-		cp[i] = make([]int, len(m[i]))
-		copy(cp[i], m[i])
-	}
-	return cp
-}
-
-func Solve(grid [][]int) [][]int {
-	out := copyMatrix(grid)
-
-	var validSolutions ValidSolutions
-
-	for i := 0; i < len(grid); i++ {
-		for j := 0; j < len(grid[i]); j++ {
-			if grid[i][j] == -1 {
-				validSolutions = addNewNumberToAllSlots(validSolutions, out, i, j)
-			}
-		}
-	}
-
-	for _, solution := range validSolutions {
-		valid := MatrixIsValid(solution)
-		if valid {
-			return solution
-		}
-	}
-
-	return nil
-}
-
-func addNewNumberToAllSlots(inputSolutions ValidSolutions, matrix [][]int, i int, j int) ValidSolutions {
-	var outputSolutions ValidSolutions
-
-	if len(inputSolutions) == 0 {
-		if matrix[i][j] == -1 {
-			for k := 1; k <= 9; k++ {
-				tmp := copyMatrix(matrix)
-				tmp[i][j] = k
-				outputSolutions = append(outputSolutions, tmp)
-			}
-		}
-	} else {
-		for _, solution := range inputSolutions {
-			if solution[i][j] == -1 {
-				for k := 1; k <= 9; k++ {
-					tmp := copyMatrix(solution)
-					tmp[i][j] = k
-					outputSolutions = append(outputSolutions, tmp)
-				}
-			}
-		}
-	}
-
-	return outputSolutions
-}
-
 func nextValueToAdd(ints []int) int {
 	return -1
 }
