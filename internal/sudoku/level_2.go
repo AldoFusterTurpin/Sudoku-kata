@@ -54,15 +54,17 @@ func Solve(grid [][]int) [][]int {
 	return nil
 }
 
-func addNewNumberToAllSlots(validSolutionsSoFar ValidSolutions, matrix [][]int, i int, j int) ValidSolutions {
+func addNewNumberToAllSlots(validSolutionsSoFar ValidSolutions, grid [][]int, i int, j int) ValidSolutions {
 	var outputSolutions ValidSolutions
 
 	if len(validSolutionsSoFar) == 0 {
-		if matrix[i][j] == -1 {
+		if grid[i][j] == -1 {
 			for k := 1; k <= 9; k++ {
-				tmp := copyMatrix(matrix)
+				tmp := copyMatrix(grid)
 				tmp[i][j] = k
-				outputSolutions = append(outputSolutions, tmp)
+				if ProposedSolutionIsPartiallyValid(grid, tmp) {
+					outputSolutions = append(outputSolutions, tmp)
+				}
 			}
 		}
 	} else {
@@ -71,7 +73,9 @@ func addNewNumberToAllSlots(validSolutionsSoFar ValidSolutions, matrix [][]int, 
 				for k := 1; k <= 9; k++ {
 					tmp := copyMatrix(solution)
 					tmp[i][j] = k
-					outputSolutions = append(outputSolutions, tmp)
+					if ProposedSolutionIsPartiallyValid(grid, tmp) {
+						outputSolutions = append(outputSolutions, tmp)
+					}
 				}
 			}
 		}
