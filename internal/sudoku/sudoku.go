@@ -151,10 +151,6 @@ func gridCorrespondsToProposedSolution(grid [][]int, proposedSolution [][]int) b
 	return true
 }
 
-func nextValueToAdd(ints []int) int {
-	return -1
-}
-
 // SolveLevel_1 solves the first level of the kata.
 func SolveLevel_1(path string) error {
 	grid, err := getMatrixFromPath(path + "/grid.csv")

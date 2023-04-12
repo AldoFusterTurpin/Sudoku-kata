@@ -45,8 +45,7 @@ func Solve(grid [][]int) [][]int {
 	}
 
 	for _, solution := range validSolutions {
-		valid := MatrixIsValid(solution)
-		if valid {
+		if valid := ProposedSolutionIsValid(grid, solution); valid {
 			return solution
 		}
 	}
