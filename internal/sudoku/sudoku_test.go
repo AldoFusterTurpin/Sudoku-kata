@@ -305,6 +305,29 @@ func TestSolveSudoku(t *testing.T) {
 				{2, 8, 7, 4, 1, 9, 6, 3, 5},
 				{3, 4, 5, 2, 8, 6, 1, 7, 9}},
 		},
+		"ShouldReturnTheSudokuSolved_IfItHasASolution_2": {
+			grid: [][]int{
+        {5, 3, 4, 6, 7, 8, 9, 1, 2},
+        {6, 7, 2, 1, 9, 5, 3, 4, 8},
+        {1, 9, 8, 3, 4, 2, 5, 6, 7},
+        {8, 5, 9, 7, 6, 1, 4, 2, 3},
+        {4, 2, 6, 8, 5, 3, 7, 9, 1},
+        {7, 1, 3, 9, 2, 4, 8, 5, 6},
+        {9, 6, 1, 5, 3, 7, 2, 8, 4},
+        {2, 8, 7, 4, 1, 9, 6, 3, 5},
+        {3, 4, 5, 2, 8, 6, 1, 7, -1}},
+      expectedSolution: [][]int{
+				{5, 3, 4, 6, 7, 8, 9, 1, 2},
+				{6, 7, 2, 1, 9, 5, 3, 4, 8},
+				{1, 9, 8, 3, 4, 2, 5, 6, 7},
+				{8, 5, 9, 7, 6, 1, 4, 2, 3},
+				{4, 2, 6, 8, 5, 3, 7, 9, 1},
+				{7, 1, 3, 9, 2, 4, 8, 5, 6},
+				{9, 6, 1, 5, 3, 7, 2, 8, 4},
+				{2, 8, 7, 4, 1, 9, 6, 3, 5},
+				{3, 4, 5, 2, 8, 6, 1, 7, 9},
+        },
+		},
 		"ShouldReturnTheSudokuSolved With a hard sudoku": {
 			// https://abcnews.go.com/blogs/headlines/2012/06/can-you-solve-the-hardest-ever-sudoku
 			// TODO: solve this test case
@@ -314,7 +337,7 @@ func TestSolveSudoku(t *testing.T) {
 				{-1, 7, -1, -1, 9, -1, 2, -1, -1},
 				{-1, 5, -1, -1, -1, 7, -1, -1, -1},
 				{-1, -1, -1, -1, 4, 5, 7, -1, -1},
-				{-1, -1, -1, 1, -1, -1, -1, 6, 8},
+				{-1, -1, -1, 1, -1, -1, -1, 3, -1},
 				{-1, -1, 1, -1, -1, -1, -1, 6, 8},
 				{-1, -1, 8, 5, -1, -1, -1, 1, -1},
 				{-1, 9, -1, -1, -1, -1, 4, -1, -1}},
@@ -352,7 +375,8 @@ func TestSolveSudoku(t *testing.T) {
 				{3, 4, 5, 2, 8, 6, 1, 7, 9}},
 		}, */
 		"ShouldReturnNil_IfCannotBeSolved": {
-			grid: [][]int{{5, 3, -1, -1, 7, -1, -1, -1, -1},
+			grid: [][]int{
+        {5, 3, -1, -1, 7, -1, -1, -1, -1},
 				{6, -1, -1, 1, 9, 5, -1, -1, -1},
 				{-1, 9, 8, -1, -1, -1, -1, 6, -1},
 				{8, -1, -1, -1, 6, -1, -1, -1, 3},
@@ -367,7 +391,7 @@ func TestSolveSudoku(t *testing.T) {
 
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got := sudoku.Solve(tc.grid)
+			_, got := sudoku.SolveBacktracking(tc.grid)
 
 			isEqual := reflect.DeepEqual(got, tc.expectedSolution)
 			if !isEqual {

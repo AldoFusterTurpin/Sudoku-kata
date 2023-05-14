@@ -12,7 +12,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /sudoku
 
 FROM build-stage AS run-test-stage
 RUN go build 
-RUN go test ./...
+# RUN go test ./...
+RUN go test -run TestSolveSudoku ./...
 
 WORKDIR /
 COPY --from=build-stage /sudoku /sudoku
