@@ -64,7 +64,6 @@ func sliceElementsAreUnique(slice []int) bool {
 	return true
 }
 
-// TODO: check this as I think this is failing
 func areBoxesValid(matrix [][]int, nRows int) bool {
 	numberOfBoxes := int(math.Sqrt(float64(nRows)))
 
@@ -90,55 +89,6 @@ func areBoxesValid(matrix [][]int, nRows int) bool {
 		startI += numberOfBoxes
 		endI += numberOfBoxes
 	}
-
-	// wrong below
-	// for endI <= nRows && endJ <= nRows {
-	// 	box := createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)
-
-	// 	if !sliceElementsAreUnique(box) {
-	// 		return false
-	// 	}
-
-	// 	startI += numberOfBoxes
-	// 	startJ += numberOfBoxes
-	// 	endI += numberOfBoxes
-	// 	endJ += numberOfBoxes
-	// }
-
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 0, 3, 0, 3)) {
-	// 	return false
-	// }
-
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 0, 3, 3, 6)) {
-	// 	return false
-	// }
-
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 0, 3, 6, 9)) {
-	// 	return false
-	// }
-
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 3, 6, 0, 3)) {
-	// 	return false
-	// }
-
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 3, 6, 3, 6)) {
-	// 	return false
-	// }
-
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 3, 6, 6, 9)) {
-	// 	return false
-	// }
-
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 6, 9, 0, 3)) {
-	// 	return false
-	// }
-
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 6, 9, 3, 6)) {
-	// 	return false
-	// }
-	// if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 6, 9, 6, 9)) {
-	// 	return false
-	// }
 
 	return true
 }
