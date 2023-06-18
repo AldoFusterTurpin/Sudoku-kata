@@ -23,7 +23,12 @@ func TestMatrixIsValid(t *testing.T) {
 			expected: false,
 		},
 		"ShouldReturnTrueForValidMatrix": {
-			input:    [][]int{{1, 2, 3, 4}, {3, 4, 1, 2}, {2, 3, 4, 1}, {4, 1, 2, 3}},
+			input: [][]int{
+				{1, 2, 3, 4},
+				{3, 4, 1, 2},
+				{2, 3, 4, 1},
+				{4, 1, 2, 3},
+			},
 			expected: true,
 		},
 		"ShouldReturnFalseForNotValidRangeMatrix": {

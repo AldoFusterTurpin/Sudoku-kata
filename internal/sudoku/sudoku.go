@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -66,7 +65,7 @@ func sliceElementsAreUnique(slice []int) bool {
 
 // TODO: check this as I think this is failing
 func areBoxesValid(matrix [][]int, nRows int) bool {
-	numberOfBoxes := int(math.Sqrt(float64(nRows)))
+	// numberOfBoxes := int(math.Sqrt(float64(nRows)))
 
 	// var startI, startJ int
 	// endI := numberOfBoxes
@@ -89,42 +88,41 @@ func areBoxesValid(matrix [][]int, nRows int) bool {
 		return false
 	}
 
-	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 3, 0, 3, 0)) {
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 0, 3, 3, 6)) {
 		return false
 	}
 
-	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 0, 3, 6, 9)) {
 		return false
 	}
 
-	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 3, 6, 0, 3)) {
 		return false
 	}
 
-	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 3, 6, 3, 6)) {
 		return false
 	}
 
-	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 3, 6, 6, 9)) {
 		return false
 	}
 
-	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 6, 9, 0, 3)) {
 		return false
 	}
 
-	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 6, 9, 3, 6)) {
 		return false
 	}
-
-	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 6, 9, 6, 9)) {
 		return false
 	}
 
 	return true
 }
 
-func createBoxSliceFromMatrix(matrix [][]int, startRowIndex, startColIndex, endRowIndex, endColIndex int) []int {
+func createBoxSliceFromMatrix(matrix [][]int, startRowIndex, endRowIndex, startColIndex, endColIndex int) []int {
 	var box []int
 	for i := startRowIndex; i < endRowIndex; i++ {
 
