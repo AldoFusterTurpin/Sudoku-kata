@@ -18,3 +18,20 @@ Someone could say that we can just build the image without executing the go test
 podman run sudoku:latest -it /bin/bash
 ```
 and then when we are inside the container execute the go test ./... comand. As of today this is not needed because the different layers of the container image are cached and it works pretty fast.
+
+*IMPORTANT:*
+
+If you execute the 
+```sh
+podman build -t sudoku .
+```
+and in the step where the test are run you see something like
+
+[2/2] STEP 3/6: RUN go test ./...
+--> Using cache c59c88df1a42190f04b899b16e510e24b1046d5b564d5ec65b03d57fc95c458c
+--> Pushing cache []:b72b53679f98fcd75e49f51eb04c1afe247026a94d87a6955bdaf5afd032e600
+
+it means that the image layer is cached and the tests are NOT executed because nothing has changed in your code. 
+
+If you still want to execute the tests even your code have not changed, modify with a simple random comment (or blank line) the test file.
+(You probably don't need to do that, but just to inform you)

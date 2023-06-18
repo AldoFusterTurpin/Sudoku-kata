@@ -1,5 +1,5 @@
 # reference: https://docs.docker.com/language/golang/build-images/
-FROM golang:1.17 AS build-stage
+FROM golang:1.20 AS build-stage
 
 WORKDIR /app
 
