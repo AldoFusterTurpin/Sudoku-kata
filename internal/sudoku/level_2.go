@@ -22,6 +22,7 @@ This kind of problems are tipycal solved using a recursive function to easily ge
 Clear examples of that are the Dijkstra Algorithm (https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#Algorithm) or my solution to the Advent Of Code 2022 Day 7 where I use a queue instead of a recursive call to maintain the "unvisited" folders :) (https://github.com/AldoFusterTurpin/AdventOfCode-2022)
 Important note: recursive functions can be converted to iterative ones but Backtracking is not easily convertible to a recursive one.
 */
+const emptyCell = 0
 
 type Matrix [][]int
 
@@ -42,7 +43,7 @@ func Solve(grid [][]int) [][]int {
 
 	for i := 0; i < len(grid); i++ {
 		for j := 0; j < len(grid[i]); j++ {
-			if grid[i][j] == -1 {
+			if grid[i][j] == emptyCell {
 				candidatesSolutions = append(candidatesSolutions, getMoreCandidatesSolutions(candidatesSolutions, grid, i, j)...)
 			}
 		}
@@ -57,43 +58,41 @@ func Solve(grid [][]int) [][]int {
 func SolveBacktracking(grid [][]int) (bool, [][]int) {
 	l := len(grid)
 	for i := 0; i < l; i++ {
-		for j := 0; j < len(grid[i]); j++ {
-			cellIsEmpty := grid[i][j] == -1
+		for j := 0; j < l; j++ {
+			cellIsEmpty := grid[i][j] == emptyCell
 			if cellIsEmpty {
-				// try all possible numbers in the current cell
-				for v := 1; v <= l; v++ {
-					currentVal := grid[i][j]
-					// We just put the new number in the matrix if the matrix is valid with the new number on it.
-					grid[i][j] = v // put the new number
-					if !MatrixIsValid(grid) {
-						// if matrix is not valid, undo the last change and skip this iteration.
-						grid[i][j] = currentVal
-						continue
+				for numberToTry := 1; numberToTry <= l; numberToTry++ {
+					if placementIsValid(grid, i, j, numberToTry) {
+						grid[i][j] = numberToTry
+						if solved, rGrid := SolveBacktracking(grid); solved {
+							return true, rGrid
+						}
+						grid[i][j] = emptyCell
 					}
-          // TODO(Aldo): maybe do the matrix copy  on line 65 ?
-          if b, rGrid := SolveBacktracking(copyMatrix(grid)); b { 
-						return true, rGrid
-					}
-					// else
-					grid[i][j] = -1
 				}
-				// After trying all the numbers, we return false as we did not find a valid solution.
-				// We can think about that as a search: if at that point we have not found x value, we can return false.
+				// After trying all the numbers, we return false as we did not find a valid number to place in that cell
 				return false, nil
 			}
 		}
 	}
-
 	// At this point we have found a solution as we have not returned false so far.
 	// i,e: we only reach this point if all previous positions were valid.
 	return true, grid
+}
+
+// placementIsValid returns true if puting numberToTry in grid[i][j]
+// would lead to a valid matrix
+func placementIsValid(grid [][]int, i, j, numberToTry int) bool {
+	gridCopy := copyMatrix(grid)
+	gridCopy[i][j] = numberToTry
+	return MatrixIsValid(gridCopy)
 }
 
 func getMoreCandidatesSolutions(candidateSolutionsIn CandidatesSolutions, grid [][]int, i int, j int) CandidatesSolutions {
 	var moreCandidateSolutions CandidatesSolutions
 
 	if len(candidateSolutionsIn) == 0 {
-		if grid[i][j] == -1 {
+		if grid[i][j] == emptyCell {
 			for k := 1; k <= 9; k++ {
 				tmp := copyMatrix(grid)
 				tmp[i][j] = k
@@ -104,7 +103,7 @@ func getMoreCandidatesSolutions(candidateSolutionsIn CandidatesSolutions, grid [
 		}
 	} else {
 		for _, solution := range candidateSolutionsIn {
-			if solution[i][j] == -1 {
+			if solution[i][j] == emptyCell {
 				for k := 1; k <= 9; k++ {
 					tmp := copyMatrix(solution)
 					tmp[i][j] = k

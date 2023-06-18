@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// MatrixIsValid checks whether the matrix of a sudoku expectedSolution is valid or not.
+// MatrixIsValid checks whether the matrix is valid or not.
 func MatrixIsValid(matrix [][]int) bool {
 	nRows := len(matrix)
 	nCols := len(matrix[0])
@@ -25,7 +25,7 @@ func MatrixIsValid(matrix [][]int) bool {
 
 func areRowsAndColsValid(matrix [][]int, nCols int) bool {
 	for i, line := range matrix {
-		if !isRowValidSkipsEmpty(line) {
+		if !sliceElementsAreUnique(line) {
 			return false
 		}
 
@@ -36,18 +36,20 @@ func areRowsAndColsValid(matrix [][]int, nCols int) bool {
 			col = append(col, element)
 		}
 
-		if !isRowValidSkipsEmpty(col) {
+		if !sliceElementsAreUnique(col) {
 			return false
 		}
 	}
 	return true
 }
 
-func isRowValidSkipsEmpty(slice []int) bool {
+// sliceElementsAreUnique returns true if there are non repited elments in the slice.
+// Otherwise it returns false. It skips empty elements.
+func sliceElementsAreUnique(slice []int) bool {
 	uniques := make(map[int]struct{})
 
 	for _, element := range slice {
-		if element == -1 {
+		if element == emptyCell {
 			continue
 		}
 
@@ -62,24 +64,61 @@ func isRowValidSkipsEmpty(slice []int) bool {
 	return true
 }
 
+// TODO: check this as I think this is failing
 func areBoxesValid(matrix [][]int, nRows int) bool {
 	numberOfBoxes := int(math.Sqrt(float64(nRows)))
 
-	var startI, startJ int
-	endI := numberOfBoxes
-	endJ := numberOfBoxes
+	// var startI, startJ int
+	// endI := numberOfBoxes
+	// endJ := numberOfBoxes
 
-	for endI <= nRows && endJ <= nRows {
-		box := createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)
+	// for endI <= nRows && endJ <= nRows {
+	// 	box := createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)
 
-		if !isRowValidSkipsEmpty(box) {
-			return false
-		}
+	// 	if !sliceElementsAreUnique(box) {
+	// 		return false
+	// 	}
 
-		startI += numberOfBoxes
-		startJ += numberOfBoxes
-		endI += numberOfBoxes
-		endJ += numberOfBoxes
+	// 	startI += numberOfBoxes
+	// 	startJ += numberOfBoxes
+	// 	endI += numberOfBoxes
+	// 	endJ += numberOfBoxes
+	// }
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 0, 3, 0, 3)) {
+		return false
+	}
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, 3, 0, 3, 0)) {
+		return false
+	}
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+		return false
+	}
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+		return false
+	}
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+		return false
+	}
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+		return false
+	}
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+		return false
+	}
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+		return false
+	}
+
+	if !sliceElementsAreUnique(createBoxSliceFromMatrix(matrix, startI, startJ, endI, endJ)) {
+		return false
 	}
 
 	return true
@@ -106,11 +145,11 @@ func ProposedSolutionIsValid(grid [][]int, proposedSolution [][]int) bool {
 		noEmptyCells(proposedSolution)
 }
 
-// noEmptyCells verifies all rows in the matrix have a value (-1 means empty).
+// noEmptyCells verifies all rows in the matrix have a value (emptyCell means empty).
 func noEmptyCells(solution [][]int) bool {
 	for _, line := range solution {
 		for _, element := range line {
-			if element == -1 {
+			if element == emptyCell {
 				return false
 			}
 		}
@@ -141,8 +180,8 @@ func gridCorrespondsToProposedSolution(grid [][]int, proposedSolution [][]int) b
 
 	for i := 0; i < gridRows; i++ {
 		for j := 0; j < gridCols; j++ {
-			gridContainsNumber := grid[i][j] != -1
-			proposedSolutionContainsNumber := proposedSolution[i][j] != -1
+			gridContainsNumber := grid[i][j] != emptyCell
+			proposedSolutionContainsNumber := proposedSolution[i][j] != emptyCell
 			if gridContainsNumber && proposedSolutionContainsNumber && grid[i][j] != proposedSolution[i][j] {
 				return false
 			}
